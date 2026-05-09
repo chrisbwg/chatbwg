@@ -4,6 +4,8 @@ const axios = require("axios");
 const path = require("path");
 const fs = require("fs");
 
+let chats = [];
+
 require("dotenv").config();
 
 const app = express();
@@ -21,7 +23,9 @@ app.post("/chat", async (req, res) => {
   try {
 
     const userMessage = req.body.message;
-
+chats.push({
+  user: userMessage
+});
     const response = await axios.post(
 
       "https://openrouter.ai/api/v1/chat/completions",
@@ -72,11 +76,16 @@ Sois naturel, intelligent et utile.`
         }
       }
     );
+      const botReply =
+response.data.choices[0].message.content;
 
-    res.json({
-      reply:
-      response.data.choices[0].message.content
-    });
+chats.push({
+  bot: botReply
+});
+
+res.json({
+  reply: botReply
+});
 const chatData = {
   user: userMessage,
   bot: botReply,
@@ -253,6 +262,9 @@ app.get("/chats", (req, res) => {
   `;
 
   res.send(html);
+});
+app.get("/conversations", (req, res) => {
+  res.json(chats);
 });
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur le port ${PORT}`);
