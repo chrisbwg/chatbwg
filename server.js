@@ -179,6 +179,81 @@ app.post("/image", async (req, res) => {
     });
   }
 });
+app.get("/chats", (req, res) => {
+
+  if(!fs.existsSync("chats.json")) {
+    return res.send("Aucune conversation.");
+  }
+
+  const chats = JSON.parse(
+    fs.readFileSync("chats.json")
+  );
+
+  let html = `
+  <html>
+  <head>
+    <title>ChatBWG Conversations</title>
+
+    <style>
+      body{
+        font-family: Arial;
+        background:#111;
+        color:white;
+        padding:20px;
+      }
+
+      .chat{
+        background:#222;
+        padding:15px;
+        margin-bottom:15px;
+        border-radius:10px;
+      }
+
+      .user{
+        color:#00ff99;
+      }
+
+      .bot{
+        color:#00bfff;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <h1>Conversations ChatBWG</h1>
+  `;
+
+  chats.reverse().forEach(chat => {
+
+    html += `
+      <div class="chat">
+
+        <p class="user">
+          <b>Utilisateur:</b>
+          ${chat.user}
+        </p>
+
+        <p class="bot">
+          <b>IA:</b>
+          ${chat.bot}
+        </p>
+
+        <small>
+          ${chat.time}
+        </small>
+
+      </div>
+    `;
+  });
+
+  html += `
+    </body>
+    </html>
+  `;
+
+  res.send(html);
+});
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur le port ${PORT}`);
 });
