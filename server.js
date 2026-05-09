@@ -4,8 +4,6 @@ const axios = require("axios");
 const path = require("path");
 const fs = require("fs");
 
-let chats = [];
-
 require("dotenv").config();
 
 const app = express();
@@ -144,7 +142,7 @@ app.post("/image", async (req, res) => {
       image:
       response.data.data[0].url
     });
-
+I
   } catch(error) {
 
     console.log(error.response?.data || error.message);
@@ -155,35 +153,6 @@ app.post("/image", async (req, res) => {
   }
 });
 const PORT = process.env.PORT || 3000;
-app.post("/image", async (req, res) => {
-  try {
-    const prompt = req.body.prompt;
-
-    const response = await axios.post(
-      "https://openrouter.ai/api/v1/images/generations",
-      {
-        model: "openai/dall-e-3",
-        prompt: prompt,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    res.json({
-      image: response.data.data[0].url,
-    });
-
-  } catch (error) {
-    console.log(error.response?.data || error.message);
-
-    res.status(500).json({
-      error: "Erreur génération image",
-    });
-  }
 });
 app.get("/chats", (req, res) => {
 
