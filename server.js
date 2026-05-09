@@ -1,11 +1,16 @@
-onst express = require("express");
+const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const path = require("path");
 const fs = require("fs");
 
 require("dotenv").config();
+const { createClient } = require("@supabase/supabase-js");
 
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+);
 const app = express();
 
 app.use(cors());
@@ -82,7 +87,12 @@ fs.writeFileSync(
   "chats.json",
   JSON.stringify(chats, null, 2)
 );
-
+await supabase.from("messages").insert([
+  {
+    user_message: userMessage,
+    bot_reply: botReply
+  }
+]);
 res.json({
   reply: botReply
 });
