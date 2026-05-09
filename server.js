@@ -58,10 +58,6 @@ Tu aides les utilisateurs avec respect et précision.
 ] 
  },
 
-...req.body.messages
-
-]      },
-
       {
         headers: {
           Authorization:
