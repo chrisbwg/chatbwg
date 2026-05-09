@@ -82,7 +82,36 @@ Tu aides les utilisateurs avec respect et précision.
 });
 
 const PORT = process.env.PORT || 3000;
+app.post("/image", async (req, res) => {
+  try {
+    const prompt = req.body.prompt;
 
+    const response = await axios.post(
+      "https://openrouter.ai/api/v1/images/generations",
+      {
+        model: "openai/dall-e-3",
+        prompt: prompt,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    res.json({
+      image: response.data.data[0].url,
+    });
+
+  } catch (error) {
+    console.log(error.response?.data || error.message);
+
+    res.status(500).json({
+      error: "Erreur génération image",
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur le port ${PORT}`);
 });
