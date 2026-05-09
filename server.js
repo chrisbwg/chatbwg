@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const path = require("path");
+const fs = require("fs");
 
 require("dotenv").config();
 
@@ -76,6 +77,26 @@ Sois naturel, intelligent et utile.`
       reply:
       response.data.choices[0].message.content
     });
+const chatData = {
+  user: userMessage,
+  bot: botReply,
+  time: new Date()
+};
+
+let chats = [];
+
+if(fs.existsSync("chats.json")) {
+  chats = JSON.parse(
+    fs.readFileSync("chats.json")
+  );
+}
+
+chats.push(chatData);
+
+fs.writeFileSync(
+  "chats.json",
+  JSON.stringify(chats, null, 2)
+);
 
   } catch (error) {
 
