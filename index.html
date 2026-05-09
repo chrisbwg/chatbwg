@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChatBWG</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="chat-container">
+
+    <!-- HEADER -->
+    <div class="chat-header">
+      <div class="bot-info">
+        <div class="bot-avatar">
+
+  <img 
+    src="images/profil.jpg"
+    alt="Bot"
+  >
+
+</div>
+
+        <div>
+          <h2>ChatBWG</h2>
+          <span>En ligne</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="chat-box" id="chat-box">
+
+      <!-- MESSAGE BOT -->
+      <div class="message bot-message">
+        Salut 👋<br>
+        Je suis ton assistant IA.
+      </div>
+    </div>
+    
+    <!-- INPUT AREA -->
+<div class="chat-input">
+
+  <!-- bouton ajouter -->
+  <button class="icon-btn">
+    +
+  </button>
+
+  <!-- champ texte -->
+  <input 
+    type="text"
+    id="user-input"
+    placeholder="Écris un message..."
+  >
+
+  <!-- bouton envoyer -->
+  <button id="mic-btn">
+    🎤
+  </button>
+
+  <button id="send-btn">
+    ➤
+  </button>
+
+</div>
+
+</div>
+
+    </div>
+
+  </div>
+<script src="script.js"></script>
+</body>
+</html>
