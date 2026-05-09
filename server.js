@@ -1,4 +1,4 @@
-const express = require("express");
+onst express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const path = require("path");
@@ -13,35 +13,27 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.post("/chat", async (req, res) => {
+try {
 
-  try {
+const userMessage = req.body.message;
 
-    const userMessage = req.body.message;
-chats.push({
-  user: userMessage
-});
-    const response = await axios.post(
-
-      "https://openrouter.ai/api/v1/chat/completions",
-
-      {
-         model: "openai/gpt-3.5-turbo", 
-messages: [
-
+const response = await axios.post(
+  "https://openrouter.ai/api/v1/chat/completions",
   {
-    role: "system",
-    content: `
+    model: "openai/gpt-3.5-turbo",
+
+    messages: [
+      {
+        role: "system",
+        content: `
+
 Tu es ChatBWG, un assistant IA intelligent créé par Christian Bwanga.
 
 Christian Bwanga est ton créateur, développeur et propriétaire.
-Il est passionné par la technologie, la programmation et l’intelligence artificielle.
-
-Quand quelqu’un demande qui est Christian Bwanga ou Chris BWG,
-réponds qu’il est le créateur de ChatBWG.
 
 Ton nom est ChatBWG.
 
@@ -51,32 +43,25 @@ français, anglais, swahili, espagnol, arabe, etc.
 Tu aides les utilisateurs avec respect et précision.
 `
 },
-{
-  role: "user",
-  content: userMessage
-}
-] 
- },
 
       {
-        headers: {
-          Authorization:
-          `Bearer ${process.env.OPENROUTER_API_KEY}`,
-
-          "Content-Type": "application/json"
-        }
+        role: "user",
+        content: userMessage
       }
-    );
-      const botReply =
-response.data.choices[0].message.content;
+    ]
+  },
 
-chats.push({
-  bot: botReply
-});
+  {
+    headers: {
+      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      "Content-Type": "application/json"
+    }
+  }
+);
 
-res.json({
-  reply: botReply
-});
+const botReply =
+  response.data.choices[0].message.content;
+
 const chatData = {
   user: userMessage,
   bot: botReply,
@@ -85,7 +70,7 @@ const chatData = {
 
 let chats = [];
 
-if(fs.existsSync("chats.json")) {
+if (fs.existsSync("chats.json")) {
   chats = JSON.parse(
     fs.readFileSync("chats.json")
   );
@@ -98,136 +83,129 @@ fs.writeFileSync(
   JSON.stringify(chats, null, 2)
 );
 
-  } catch (error) {
-
-    console.log(error);
-
-    res.status(500).json({
-      reply: "Erreur serveur"
-    });
-
-  }
-
+res.json({
+  reply: botReply
 });
+
+} catch (error) {
+
+console.log(error.response?.data || error.message);
+
+res.status(500).json({
+  reply: "Erreur serveur"
+});
+
+}
+});
+
 app.post("/image", async (req, res) => {
 
-  try {
+try {
 
-    const response = await axios.post(
+const response = await axios.post(
+  "https://openrouter.ai/api/v1/images/generations",
 
-      "https://openrouter.ai/api/v1/images/generations",
+  {
+    model: "openai/dall-e-3",
+    prompt: req.body.prompt
+  },
 
-      {
-        model: "openai/dall-e-3",
-
-        prompt: req.body.prompt
-      },
-
-      {
-        headers: {
-          Authorization:
-            `Bearer ${process.env.OPENROUTER_API_KEY}`,
-
-          "Content-Type":
-            "application/json"
-        }
-      }
-    );
-
-    res.json({
-      image:
-      response.data.data[0].url
-    });
-I
-  } catch(error) {
-
-    console.log(error.response?.data || error.message);
-
-    res.status(500).json({
-      error: "Erreur génération image"
-    });
+  {
+    headers: {
+      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      "Content-Type": "application/json"
+    }
   }
+);
+
+res.json({
+  image: response.data.data[0].url
 });
-const PORT = process.env.PORT || 3000;
+
+} catch (error) {
+
+console.log(error.response?.data || error.message);
+
+res.status(500).json({
+  error: "Erreur génération image"
 });
+
+}
+});
+
 app.get("/chats", (req, res) => {
 
-  if(!fs.existsSync("chats.json")) {
-    return res.send("Aucune conversation.");
-  }
+if (!fs.existsSync("chats.json")) {
+return res.send("Aucune conversation.");
+}
 
-  const chats = JSON.parse(
-    fs.readFileSync("chats.json")
-  );
+const chats = JSON.parse(
+fs.readFileSync("chats.json")
+);
 
-  let html = `
+let html = `
+
   <html>
   <head>
-    <title>ChatBWG Conversations</title>
+    <title>ChatBWG Conversations</title><style>
+  body{
+    font-family: Arial;
+    background:#111;
+    color:white;
+    padding:20px;
+  }
 
-    <style>
-      body{
-        font-family: Arial;
-        background:#111;
-        color:white;
-        padding:20px;
-      }
+  .chat{
+    background:#222;
+    padding:15px;
+    margin-bottom:15px;
+    border-radius:10px;
+  }
 
-      .chat{
-        background:#222;
-        padding:15px;
-        margin-bottom:15px;
-        border-radius:10px;
-      }
+  .user{
+    color:#00ff99;
+  }
 
-      .user{
-        color:#00ff99;
-      }
+  .bot{
+    color:#00bfff;
+  }
+</style>
 
-      .bot{
-        color:#00bfff;
-      }
-    </style>
-  </head>
+  </head>  <body><h1>Conversations ChatBWG</h1>
 
-  <body>
+`;
 
-    <h1>Conversations ChatBWG</h1>
-  `;
+chats.reverse().forEach(chat => {
 
-  chats.reverse().forEach(chat => {
+html += `
+  <div class="chat">
 
-    html += `
-      <div class="chat">
+    <p class="user">
+      <b>Utilisateur:</b>
+      ${chat.user}
+    </p>
 
-        <p class="user">
-          <b>Utilisateur:</b>
-          ${chat.user}
-        </p>
+    <p class="bot">
+      <b>IA:</b>
+      ${chat.bot}
+    </p>
 
-        <p class="bot">
-          <b>IA:</b>
-          ${chat.bot}
-        </p>
+    <small>
+      ${chat.time}
+    </small>
 
-        <small>
-          ${chat.time}
-        </small>
+  </div>
+`;
 
-      </div>
-    `;
-  });
-
-  html += `
-    </body>
-    </html>
-  `;
-
-  res.send(html);
 });
-app.get("/conversations", (req, res) => {
-  res.json(chats);
+
+html += "</body> </html>";
+
+res.send(html);
 });
+
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-  console.log(`Serveur lancé sur le port ${PORT}`);
+console.log(`Serveur lancé sur le port ${PORT}`);
 });
