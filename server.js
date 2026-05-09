@@ -50,10 +50,7 @@ Tu aides les utilisateurs avec respect et précision.
 `
   },
 
-  {
-    role: "user",
-    content: userMessage
-  }
+...req.body.messages
 
 ]      },
 
