@@ -2,6 +2,8 @@ const input = document.getElementById("user-input");
 const button = document.getElementById("send-btn");
 const chatBox = document.getElementById("chat-box");
 
+let conversationHistory = [];
+
 function addMessage(text, className) {
 
   const message = document.createElement("div");
@@ -23,7 +25,10 @@ async function sendMessage() {
   if(userText === "") return;
 
   addMessage(userText, "user-message");
-
+  conversationHistory.push({
+  role: "user",
+  content: userText
+});
   input.value = "";
 
   try {
@@ -64,14 +69,11 @@ if(userText.startsWith("/image")) {
           "Content-Type":
           "application/json"
         },
-body: JSON.stringify({
-  messages: [
-    {
-      role: "user",
-      content: userText
-    }
-  ]
-})
+       body: JSON.stringify({
+      message: userText,
+      messages: conversationHistory
+    })
+
       }
     );
 
@@ -81,6 +83,10 @@ body: JSON.stringify({
       data.reply,
       "bot-message"
     );
+   conversationHistory.push({
+     role: "assistant",
+     content: data.reply
+   });
 
   } catch(error) {
 

@@ -29,31 +29,25 @@ const userMessage = req.body.message;
 const response = await axios.post(
   "https://openrouter.ai/api/v1/chat/completions",
   {
-    model: "openai/gpt-oss-20b:free",
+   model: "openai/gpt-3.5-turbo",
 
-    messages: [
-      {
-        role: "system",
-        content: `
+   messages: [
+{
+role: "system",
+content: `
+Tu es ChatBWG, une IA intelligente et naturelle.
 
-Tu es ChatBWG, un assistant IA intelligent créé par Christian Bwanga.
+Tu réponds normalement sans te répéter.
 
-Christian Bwanga est ton créateur, développeur et propriétaire.
+Tu peux parler toutes les langues.
 
-Ton nom est ChatBWG.
-
-Tu peux parler toutes les langues naturellement :
-français, anglais, swahili, espagnol, arabe, etc.
-
-Tu aides les utilisateurs avec respect et précision.
+Ton créateur est Christian Bwanga.
 `
 },
 
-      {
-        role: "user",
-        content: userMessage
-      }
-    ]
+...req.body.messages
+]
+
   },
 
   {
